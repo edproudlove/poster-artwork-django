@@ -1,0 +1,25 @@
+.detail_image {
+    width: 100%;
+    height: auto;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 15px;
+}
+
+.detail-content {
+    margin-top: 25px;
+    font-family: 'Benne', serif;
+
+}
+.detail-content h4 {
+    color: grey;
+}
+
+
+
+.add-to-basket-form button{
+    margin-top: 15px;
+    
+}
+
+.padd-top {
+    padding-top: 10px;
+}

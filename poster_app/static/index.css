@@ -1,0 +1,125 @@
+html, body {
+    max-width: 100%;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+.custom-navbar {
+    
+    width: 100%;
+    background-color: black;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    
+    
+    
+}
+
+.custom-navbar ul{
+    width: 100%;
+    text-align: center;
+    
+}
+
+.custom-navbar ul li{
+    list-style: none;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    padding: 25px;
+    
+}
+
+.custom-navbar ul li .cart{
+    list-style: none;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    padding: 25px;
+    text-align: right;
+}
+
+.custom-navbar a {
+    color: #fff;
+}
+
+.custom-navbar a:hover {
+    color: white;
+}
+
+.title {
+    padding: 30px;
+    font-family: 'Benne', serif;
+    text-align: center;
+    color: black;
+}
+
+
+.grid-container {
+    column-count: 3;
+    column-gap: 10px;
+    margin-bottom: 100px;
+  }
+
+.poster-image {
+    width: 100%;
+    height: auto;
+    padding-bottom: 10px;
+    z-index: -1;
+    
+}
+
+.poster-image:hover{
+    opacity: 0.7;
+}
+
+
+.product-card h4 {
+    color: grey;
+    padding-bottom: 10px;
+    text-align: center;
+    font-family: 'Benne', serif;
+    z-index: 1;
+}
+
+.product-card h3 {
+    font-family: 'Benne', serif;
+    padding-top: 5px;
+    text-align: center;
+    
+    
+}
+
+.product-card img {
+    z-index: 0;
+    
+}
+
+
+/*
+
+<h3>{{ product.title }}</h3>
+                <h4>£{{ product.price_of_medium }}.00</h4>
+
+                
+
+
+
+                testing
+
+                <div class="custom-navbar">
+        <ul>
+            <li><a href="{% url 'poster_app:index' %}">Home</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">Artists</a></li>
+            <li><a href="{% url 'admin:index' %}">Sign In</a></li>
+            <li><a href="#">About Us</a></li>
+        </ul>
+        
+    </div>
+*/

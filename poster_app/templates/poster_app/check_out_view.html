@@ -1,0 +1,263 @@
+{% extends 'poster_app/base.html' %}
+{% load tags %}
+{% block content %}
+<div class="checkout-title-text">
+  <h1> Checkout</h1>
+  <h4>Order: {{order.ref_code}}</h4>
+
+  <hr>
+  
+</div>
+
+
+<div class="row">
+  <div class="col-1">
+
+  </div>
+    <div class="col-2">
+  
+
+    </div>
+    <div class="col-6 checkout-div">
+        <div class="shipping-form-container">
+            <form id="payment-form" class="stripe-form">
+                <label for="email">Enter Your Shipping Details</label>
+                  <input type="text" id="email" placeholder="Email address" class="stripe-input" required/>
+                  <input type="text" id="name" placeholder="Name on Card" class="stripe-input" required/>
+                  <input type="text" id="street-address" placeholder="Street Address" class="stripe-input" required/>
+                  <input type="text" id="city" placeholder="City" class="stripe-input" required/>
+                  <input type="text" id="postcode" placeholder="Postcode" class="stripe-input" required/>
+                  <hr>
+                <label for="delivery-option">Select A Delivery Option</label>
+                    <select class="form-control" id="delivery-option" name="delivery" required onchange="showInput();">
+                        <option>£4: Standard Delivery, 4-6 Working days</option>
+                        <option>£7.50: Express Delivery, 2-4 Working days</option>
+                        <option>£10: Next Day Delivery, 1 Working day</option>
+                    </select>
+                    <hr>
+                <label for="card-element">Total: £<span id='display'></span></label>
+                <div id="card-element"><!--Stripe.js injects the Card Element--></div>
+                <button id="submit">
+                <div class="spinner hidden" id="spinner"></div>
+                <span id="button-text">Pay now</span>
+                </button>
+                <p id="card-error" role="alert"></p>
+                <p class="result-message hidden">
+                Payment succeeded, see the result in your
+                <a href="" target="_blank">Stripe dashboard.</a> Refresh the page to pay again.
+                </p>
+            </form>
+
+        </div>
+    </div>
+    <div class="col-2">
+
+
+    </div>
+    <div class="col-1"></div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    // THIS SCRIPT CAN ALSO BE MOVED TO A JS FILE AND MAY NEED TO GO IN THE HTML TAGS NOT BODY
+    // Create an instance of the Stripe object with your publishable API key
+
+    window.onload = function() {
+      showInput();
+    };
+    
+    var stripe = Stripe("pk_test_51Ifl6yFw6DSVIJ0nlXt9Hu4OenyJyrfBQsXnq4nXY2GpQMFOPCgc9sClkXjiyDsIv3BMa2rJx2j7CxsFwS67ayl000ChvNLMPx");
+
+
+
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+    const csrftoken = getCookie('csrftoken')
+
+
+
+    // ################################################################
+    // A reference to Stripe.js initialized with your real test publishable API key.
+
+
+    // Disable the button until we have Stripe set up on the page
+    document.querySelector("button").disabled = true;
+
+    var elements = stripe.elements();
+
+        var style = {
+          base: {
+            color: "#32325d",
+            fontFamily: 'Arial, sans-serif',
+            fontSmoothing: "antialiased",
+            fontSize: "16px",
+            "::placeholder": {
+              color: "#32325d"
+            }
+          },
+          invalid: {
+            fontFamily: 'Arial, sans-serif',
+            color: "#fa755a",
+            iconColor: "#fa755a"
+          }
+        };
+
+        var card = elements.create("card", { style: style });
+        // Stripe injects an iframe into the DOM
+        card.mount("#card-element");
+
+        card.on("change", function (event) {
+          // Disable the Pay button if there are no card details in the Element
+          document.querySelector("button").disabled = event.empty;
+          document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+        });
+
+        var form = document.getElementById("payment-form");
+        form.addEventListener("submit", function(event) {
+          event.preventDefault();
+          
+
+          // Complete payment when the submit button is clicked
+          
+          fetch("{% url 'poster_app:create-payment-intent' order.id %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken
+              },
+              body: JSON.stringify({
+
+                // ################ ADDED IN FOR SHIPPING #####################
+                email: document.getElementById('email').value,
+                name: document.getElementById('name').value,
+                street_address: document.getElementById('street-address').value,
+                city: document.getElementById('city').value,
+                postcode: document.getElementById('postcode').value,
+                delivery_option: document.getElementById('delivery-option').value,
+
+              })
+            })
+              .then(function(result) {
+                return result.json();
+              })
+              .then(function(data) {
+                payWithCard(stripe, card, data.clientSecret);
+                
+              });
+          
+        });
+
+    // ################ ADDED IN FOR SHIPPING #####################
+
+
+
+    function showInput() {
+
+      //retrive the currently selcetd shipping option
+
+      var django_tempate_tags = '{{ order.get_cart_total }}'
+
+      var delivery = document.getElementById('delivery-option').value
+      var shipping_price_dict = {
+          '£4: Standard Delivery, 4-6 Working days': 4,
+          '£7.50: Express Delivery, 2-4 Working days': 7.50,
+          '£10: Next Day Delivery, 1 Working day': 10,
+      } 
+      var total_to_pay = parseFloat(django_tempate_tags) + parseFloat(shipping_price_dict[delivery])
+
+
+      document.getElementById('display').innerHTML = total_to_pay.toFixed(2);
+      console.log(total_to_pay)
+
+        
+
+    }
+    
+    
+
+
+
+    
+
+    // Calls stripe.confirmCardPayment
+    // If the card requires authentication Stripe shows a pop-up modal to
+    // prompt the user to enter authentication details without leaving your page.
+    var payWithCard = function(stripe, card, clientSecret) {
+      loading(true);
+      stripe
+        .confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: card
+          }
+        })
+        .then(function(result) {
+          if (result.error) {
+            // Show error to your customer
+            showError(result.error.message);
+          } else {
+            // The payment succeeded!
+            orderComplete(result.paymentIntent.id);
+          }
+        });
+    };
+
+    /* ------- UI helpers ------- */
+
+    // Shows a success message when the payment is complete
+    var orderComplete = function(paymentIntentId) {
+      loading(false);
+      document
+        .querySelector(".result-message a")
+        .setAttribute(
+          "href",
+          "https://dashboard.stripe.com/test/payments/" + paymentIntentId
+        );
+      document.querySelector(".result-message").classList.remove("hidden");
+      document.querySelector("button").disabled = true;
+    };
+
+    // Show the customer the error from Stripe if their card fails to charge
+    var showError = function(errorMsgText) {
+      loading(false);
+      var errorMsg = document.querySelector("#card-error");
+      errorMsg.textContent = errorMsgText;
+      setTimeout(function() {
+        errorMsg.textContent = "";
+      }, 4000);
+    };
+
+    // Show a spinner on payment submission
+    var loading = function(isLoading) {
+      if (isLoading) {
+        // Disable the button and show a spinner
+        document.querySelector("button").disabled = true;
+        document.querySelector("#spinner").classList.remove("hidden");
+        document.querySelector("#button-text").classList.add("hidden");
+      } else {
+        document.querySelector("button").disabled = false;
+        document.querySelector("#spinner").classList.add("hidden");
+        document.querySelector("#button-text").classList.remove("hidden");
+      }
+    };
+
+
+
+  </script>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'poster_app/base.html' %}
+{% load tags %}
+{% block content %}
+<div class="row">
+    <div class="col-1"></div>
+
+    <div class="col-10">
+        <div class="row detail-content">
+            
+                <div class="col-6">
+                    <img class="detail_image" src="/static/{{poster.image.url }}" alt="" loading='lazy'>
+                    
+
+                </div>
+                <div class="col-6">
+                    <h1>{{ poster.title }} </h1>
+                    <h3>Design By: {{poster.author}}</h3>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Natus saepe ullam deserunt eveniet, molestias ipsa doloribus! Doloremque dignissimos, vitae ut itaque quo, tempora illum, ex incidunt dolores eaque amet neque?
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi eveniet tempora a consectetur obcaecati, corrupti amet iste porro voluptatem repellendus aut natus, ex eligendi tenetur necessitatibus corporis quibusdam nesciunt! Cumque.
+
+                    </p>
+                    <h4>From £{{ poster.price_of_medium }}.00 - Available in: A3, A4, A5</h4>
+
+                    
+
+
+                    <div class="add-to-basket-form">
+                        <form action="" method="POST">
+                            
+                            <label for="exampleFormControlSelect1">Select From The Options Below To Purchase:</label>
+                                <select class="form-control" id="exampleFormControlSelect1" name="price">
+                                    <option>A3, (297 x 420)mm - £{{ poster.price_of_medium|change_price:"1.2" }} per item</option>
+                                    <option>A4, (210 x 297)mm - £{{ poster.price_of_medium|change_price:"1.1" }} per item</option>
+                                    <option>A5, (148.5 x 210)mm - £{{ poster.price_of_medium }}.00 per item</option>
+                                </select>
+
+                            <label class="padd-top">Select Qunatity:</label>
+                                <input type="number" name="quantity"
+                                        min="0" max="100" class="padd-top form-control" required>
+
+                            <button type="submit" class="btn btn-success right-side">Add To Basket</button>
+                            {% csrf_token %}
+                        </form>
+            
+                        
+                    </div>
+
+                </div>
+
+            
+
+        </div>
+        
+
+    </div>
+    
+    <div></div class='col-1'>
+</div>
+
+{% endblock %}

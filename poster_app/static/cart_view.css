@@ -1,0 +1,23 @@
+.cart_image {
+    width: 100%;
+    height: auto;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 15px;
+}
+
+.cart_view_items {
+    font-family: 'Benne', serif;
+}
+
+.cart_view_items h1{
+    text-align: center;
+}
+
+
+.right-side {
+    text-align: right;
+    float: right;
+}
+
+.cart_view_items h6{
+    color: grey;
+}

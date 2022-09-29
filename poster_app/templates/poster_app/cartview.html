@@ -1,0 +1,54 @@
+{% extends 'poster_app/base.html' %}
+{% load tags %}
+{% block content %}
+
+
+
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <div class="cart_view_items">
+            <h1 class="title">Your Basket</h1>
+            <div class="row">
+                <div class="col-6">
+                    <h2>Total: £{{order.get_cart_total|change_price:"1"}}</h2>
+
+                </div>
+                <div class="col-6 right-side">
+                    <a href="{% url 'poster_app:checkout' %}"><button class="btn btn-success right-side">Continue To Checkout</button></a>
+                    
+                </div>
+            </div>
+            
+            {% for item in order.items.all %}
+
+            <hr>
+            <div class="row ">
+                <div class="col-4">
+                    <img class="cart_image" src="/static/{{ item.product.image.url }}" alt="" loading='lazy'>
+
+                </div>
+                <div class="col-5">
+                    <h2> {{ item.product.title  }}</h2>
+                    <h5> Subtotal: £{{item.quantity|multiply:item.price|change_price:"1.0"}}</h5>
+                    <h6> Price: £{{item.price|change_price:"1.0"}} </h6>
+                    <h6> Size: {{item.size}}</h6>
+                    <h6> Quantity: {{item.quantity}} </h6>
+                    
+
+                </div>
+                <div class="col-3 ">
+                    <a href="{% url 'poster_app:delete_from_basket' pk=item.pk %}"><button class="btn btn-danger right-side padd-top">Remove</button></a>
+                </div>
+            </div>
+
+
+            {% endfor %}
+            <hr>
+        </div>
+
+    </div>
+    <div class="col-1"></div>
+</div>
+
+{% endblock %}

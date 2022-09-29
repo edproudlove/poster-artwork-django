@@ -1,0 +1,28 @@
+{% extends 'poster_app/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-1"></div>
+
+    <div class="col-10">
+        <h1 class="title">Our Posters</h1>
+        <div class="grid-container">
+            
+
+            {% for product in posters %}
+            <div class="product-card"> 
+
+                <a href="{% url 'poster_app:detail_poster_view' pk=product.pk %}"><img class="poster-image" src="static/{{ product.image.url  }}" alt="" loading='lazy'></a>
+                
+                
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    
+    <div></div class='col-1'>
+</div>
+
+
+
+{% endblock %}
